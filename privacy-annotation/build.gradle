@@ -1,0 +1,44 @@
+apply plugin: 'java-library'
+apply plugin: 'kotlin'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+
+if (rootProject.ext.plugin_local_debug) {
+    //本地调试补充
+    apply plugin: 'maven'
+    group = 'com.yl.lib.privacy'
+    version = '2.0.0-SNAPSHOT'
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: uri('../plugin-sentry/plugins'))
+            }
+        }
+    }
+} else {
+//    apply plugin: 'com.github.dcendents.android-maven'
+}
+
+
+// 调用maven插件，用于发布
+apply plugin: 'maven'
+
+// 配置maven插件中的uploadArchives任务
+// ./gradlew uploadArchives
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            // 设置发布路径为 工程根目录下面的 repo 文件夹
+            repository(url: uri('../plugin-sentry/plugins')) {
+                // 设置groupId，通常为包名
+                pom.groupId = 'com.yl.lib.privacy'
+                // 设置插件的版本号
+                pom.version = '2.0.0-SNAPSHOT'
+            }
+        }
+    }
+}
