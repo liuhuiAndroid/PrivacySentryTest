@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
 import com.yl.lib.privacy_test.PrivacyProxySelfTest2
 import com.yl.lib.privacy_test.TestMethod
 import com.yl.lib.privacy_test.TestMethodInJava
@@ -32,27 +33,50 @@ import com.yl.lib.sentry.hook.PrivacySentry
 import com.yl.lib.sentry.hook.util.MainProcessUtil
 import com.yl.lib.sentry.hook.util.PrivacyClipBoardManager
 import com.yl.lib.sentry.hook.util.PrivacyLog
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.lang.reflect.Field
 
 
 class MainActivity : AppCompatActivity() {
+
+
+    fun writeToFileUsingFile(context: Context, fileName: String?, data: String) {
+        val file = File(context.filesDir, fileName)
+        var fos: FileOutputStream? = null
+        try {
+            // 创建文件输出流
+            fos = FileOutputStream(file)
+            // 写入数据
+            fos.write(data.toByteArray())
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            // 确保关闭流
+            if (fos != null) {
+                try {
+                    fos.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         findViewById<Button>(R.id.btn_sharedPerferences).setOnClickListener {
+            writeToFileUsingFile(this@MainActivity, "fileName", "1234")
             // 存储数据
             val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
             val editor = sharedPreferences.edit()
-            editor.putString("username", "Alice")
-            editor.putInt("age", 20)
-
-            Log.d("TAG", "toString: ${editor.toString()}") // 输出: Username: Alice
-            editor.apply()
+            editor.putString("username", "Alice").putInt("age", 20).apply()
             // 读取数据
-            Gson().
             val username = sharedPreferences.getString("username", "Guest")
-            Log.d("TAG", "Username: $username") // 输出: Username: Alice
+            Log.d("LiuTest", "Username: $username") // 输出: Username: Alice
         }
         findViewById<Button>(R.id.btn_androidId).setOnClickListener {
             var androidId = PrivacyMethod.PrivacyMethod.getAndroidId(this)
@@ -60,7 +84,7 @@ class MainActivity : AppCompatActivity() {
             TestMethodInJava.getAndroidIdSystem(this)
             PrivacyLog.i("androidId is $androidId")
 
-            Thread{
+            Thread {
                 TestInJava.testHttpUrlConnection()
             }
         }

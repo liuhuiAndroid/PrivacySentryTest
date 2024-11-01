@@ -100,7 +100,7 @@ privacy {
     reflexMap = ["com.android.id.impl.IdProviderImpl":["getOAID","getAAID","getVAID"]]
 
     // 默认为false,按需打开
-    hookConstructor = false
+    hookConstructor = true
     // 默认为false,按需打开
     hookField = false
 

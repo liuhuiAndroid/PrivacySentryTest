@@ -1,5 +1,7 @@
 package com.yl.lib.privacy_replace;
 
+import android.util.Log;
+
 import com.yl.lib.privacy_annotation.PrivacyClassReplace;
 import com.yl.lib.sentry.hook.PrivacySentry;
 import com.yl.lib.sentry.hook.util.PrivacyLog;
@@ -32,6 +34,8 @@ public class PrivacyFileInputStream extends FileInputStream {
     }
 
     private void record(String path) {
+        String className = this.getClass().getName();
+        Log.d("LiuTest", className + "访问文件 FileInputStream path is " + path);
         PrivacyProxyUtil.Util.INSTANCE.doFilePrinter("FileInputStream", "访问文件", "path is " + path,  false);
     }
 }

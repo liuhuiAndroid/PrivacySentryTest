@@ -1,5 +1,7 @@
 package com.yl.lib.privacy_replace;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -40,6 +42,8 @@ public class PrivacyFile extends File {
     }
 
     private void record(String path) {
+        String className = this.getClass().getName();
+        Log.d("LiuTest", className + "访问文件 PrivacyFile path is " + path);
         PrivacyProxyUtil.Util.INSTANCE.doFilePrinter("PrivacyFile", "访问文件", "path is " + path, false);
     }
 }

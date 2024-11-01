@@ -51,7 +51,6 @@ open class PrivacyProxyCall {
     @Keep
     object Proxy {
 
-
         @PrivacyMethodProxy(
             originalClass = Editor::class,
             originalMethod = "apply",
@@ -61,8 +60,23 @@ open class PrivacyProxyCall {
         fun apply(
             editor: Editor
         ): Unit {
-            Log.i("LiuTest", "apply")
+            Log.i("Test", "apply")
             editor.apply()
+        }
+
+        @PrivacyMethodProxy(
+            originalClass = Editor::class,
+            originalMethod = "putString",
+            originalOpcode = MethodInvokeOpcode.INVOKEINTERFACE
+        )
+        @JvmStatic
+        fun putString(
+            editor: Editor,
+            var1: String,
+            var2: String
+        ): Editor? {
+            Log.i("Test", "putString var1=$var1,var2=$var2")
+            return EditorPlus2(editor.putString(var1, var2))
         }
 
         @PrivacyMethodProxy(
@@ -75,9 +89,22 @@ open class PrivacyProxyCall {
             editor: Editor,
             var1: String,
             var2: Int
-        ): Editor {
-            Log.i("LiuTest", "putString var1=$var1,var2=$var2")
-            return editor.putInt(var1, var2)
+        ): Editor? {
+            Log.i("LiuTest", "putInt var1=$var1,var2=$var2")
+            return EditorPlus2(editor.putInt(var1, var2))
+        }
+
+        @PrivacyMethodProxy(
+            originalClass = SharedPreferences::class,
+            originalMethod = "edit",
+            originalOpcode = MethodInvokeOpcode.INVOKEINTERFACE
+        )
+        @JvmStatic
+        fun edit(
+            sp: SharedPreferences
+        ): Editor? {
+            Log.i("LiuTest", "SharedPreferences edit ")
+            return EditorPlus2(sp.edit())
         }
 
         @PrivacyMethodProxy(
@@ -94,9 +121,6 @@ open class PrivacyProxyCall {
             Log.i("LiuTest", "getString var1=$var1,var2=$var2")
             return sp.getString(var1, var2)
         }
-
-
-
 
         // 拦截获取敏感字段 Android_id
         @PrivacyMethodProxy(

@@ -1,5 +1,7 @@
 package com.yl.lib.privacy_replace;
 
+import android.util.Log;
+
 import com.yl.lib.privacy_annotation.PrivacyClassReplace;
 import com.yl.lib.sentry.hook.PrivacySentry;
 import com.yl.lib.sentry.hook.util.PrivacyProxyUtil;
@@ -31,6 +33,8 @@ public class PrivacyFileReader extends FileReader {
     }
 
     private void record(String path) {
+        String className = this.getClass().getName();
+        Log.d("LiuTest", className + "访问文件 FileReader path is " + path);
         PrivacyProxyUtil.Util.INSTANCE.doFilePrinter("FileReader", "访问文件", "path is " + path, false);
     }
 }
