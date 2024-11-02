@@ -7,7 +7,7 @@ import com.yl.lib.privacy_annotation.PrivacyClassReplace;
 
 import java.util.Set;
 
-@PrivacyClassReplace(originClass = SharedPreferences.Editor.class)
+//@PrivacyClassReplace(originClass = SharedPreferences.Editor.class)
 public class EditorPlus2 implements SharedPreferences.Editor {
     private final SharedPreferences.Editor editor;
 
@@ -74,6 +74,5 @@ public class EditorPlus2 implements SharedPreferences.Editor {
     private void record(String key, Object value) {
         String className = this.getClass().getName();
         Log.i("LiuTest", className + " EditorPlus key = " + key + ", value = " + value);
-        // doFilePrinter("FileReader", "访问文件", "path is " + path, false);
     }
 }

@@ -11,7 +11,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.google.gson.Gson
 import com.yl.lib.privacy_test.PrivacyProxySelfTest2
 import com.yl.lib.privacy_test.TestMethod
 import com.yl.lib.privacy_test.TestMethodInJava
@@ -33,14 +32,15 @@ import com.yl.lib.sentry.hook.PrivacySentry
 import com.yl.lib.sentry.hook.util.MainProcessUtil
 import com.yl.lib.sentry.hook.util.PrivacyClipBoardManager
 import com.yl.lib.sentry.hook.util.PrivacyLog
+import java.io.BufferedReader
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.reflect.Field
+import java.io.InputStreamReader
 
 
 class MainActivity : AppCompatActivity() {
-
 
     fun writeToFileUsingFile(context: Context, fileName: String?, data: String) {
         val file = File(context.filesDir, fileName)
@@ -68,16 +68,37 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        findViewById<Button>(R.id.btn_file).setOnClickListener {
+//            writeToFileUsingFile(this@MainActivity, "fileName", "1234")
+            val filename = "myfile.txt"
+            val fileContents = "Hello, World!"
+            val fos: FileOutputStream = (this@MainActivity as Context).openFileOutput(filename, MODE_PRIVATE)
+            Log.i("LiuTest", "MainActivity openFileOutput")
+            fos.write(fileContents.toByteArray())
+            fos.close()
+
+            val fis: FileInputStream = (this@MainActivity as Context).openFileInput(filename)
+            Log.i("LiuTest", "MainActivity openFileInput")
+            val isr = InputStreamReader(fis)
+            val bufferedReader = BufferedReader(isr)
+            val stringBuilder = StringBuilder()
+            var line: String?
+            while ((bufferedReader.readLine().also { line = it }) != null) {
+                stringBuilder.append(line)
+            }
+            val fileContents2 = stringBuilder.toString()
+            fis.close()
+        }
+
         findViewById<Button>(R.id.btn_sharedPerferences).setOnClickListener {
-            writeToFileUsingFile(this@MainActivity, "fileName", "1234")
             // 存储数据
             val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.putString("username", "Alice").putInt("age", 20).apply()
             // 读取数据
             val username = sharedPreferences.getString("username", "Guest")
-            Log.d("LiuTest", "Username: $username") // 输出: Username: Alice
         }
+
         findViewById<Button>(R.id.btn_androidId).setOnClickListener {
             var androidId = PrivacyMethod.PrivacyMethod.getAndroidId(this)
             TestMethodInJava.getAndroidId(this)

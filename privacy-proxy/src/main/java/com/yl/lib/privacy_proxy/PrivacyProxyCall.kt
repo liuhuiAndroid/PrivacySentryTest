@@ -34,6 +34,8 @@ import com.yl.lib.sentry.hook.util.PrivacyLog
 import com.yl.lib.sentry.hook.util.PrivacyProxyUtil.Util.doFilePrinter
 import com.yl.lib.sentry.hook.util.PrivacyUtil
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.net.Inet4Address
 import java.net.InetAddress
 import java.net.NetworkInterface
@@ -52,17 +54,46 @@ open class PrivacyProxyCall {
     object Proxy {
 
         @PrivacyMethodProxy(
-            originalClass = Editor::class,
-            originalMethod = "apply",
-            originalOpcode = MethodInvokeOpcode.INVOKEINTERFACE
+            originalClass = Context::class,
+            originalMethod = "openFileInput",
+            originalOpcode = MethodInvokeOpcode.INVOKEVIRTUAL
         )
         @JvmStatic
-        fun apply(
-            editor: Editor
-        ): Unit {
-            Log.i("Test", "apply")
-            editor.apply()
+        fun openFileInput(
+            context: Context,
+            name: String
+        ): FileInputStream {
+            Log.i("LiuTest", "PrivacyProxyCall openFileInput name=$name")
+            return context.openFileInput(name)
         }
+
+        @PrivacyMethodProxy(
+            originalClass = Context::class,
+            originalMethod = "openFileOutput",
+            originalOpcode = MethodInvokeOpcode.INVOKEVIRTUAL
+        )
+        @JvmStatic
+        fun openFileOutput(
+            context: Context,
+            name: String,
+            mode: Int
+        ): FileOutputStream {
+            Log.i("LiuTest", "PrivacyProxyCall openFileOutput name=$name,mode=$mode")
+            return context.openFileOutput(name, mode)
+        }
+
+//        @PrivacyMethodProxy(
+//            originalClass = Editor::class,
+//            originalMethod = "apply",
+//            originalOpcode = MethodInvokeOpcode.INVOKEINTERFACE
+//        )
+//        @JvmStatic
+//        fun apply(
+//            editor: Editor
+//        ): Unit {
+//            Log.i("Test", "apply")
+//            editor.apply()
+//        }
 
         @PrivacyMethodProxy(
             originalClass = Editor::class,
@@ -75,8 +106,8 @@ open class PrivacyProxyCall {
             var1: String,
             var2: String
         ): Editor? {
-            Log.i("Test", "putString var1=$var1,var2=$var2")
-            return EditorPlus2(editor.putString(var1, var2))
+            Log.i("LiuTest", "PrivacyProxyCall putString var1=$var1,var2=$var2")
+            return editor.putString(var1, var2)
         }
 
         @PrivacyMethodProxy(
@@ -90,22 +121,22 @@ open class PrivacyProxyCall {
             var1: String,
             var2: Int
         ): Editor? {
-            Log.i("LiuTest", "putInt var1=$var1,var2=$var2")
-            return EditorPlus2(editor.putInt(var1, var2))
+            Log.i("LiuTest", "PrivacyProxyCall putInt var1=$var1,var2=$var2")
+            return editor.putInt(var1, var2)
         }
 
-        @PrivacyMethodProxy(
-            originalClass = SharedPreferences::class,
-            originalMethod = "edit",
-            originalOpcode = MethodInvokeOpcode.INVOKEINTERFACE
-        )
-        @JvmStatic
-        fun edit(
-            sp: SharedPreferences
-        ): Editor? {
-            Log.i("LiuTest", "SharedPreferences edit ")
-            return EditorPlus2(sp.edit())
-        }
+//        @PrivacyMethodProxy(
+//            originalClass = SharedPreferences::class,
+//            originalMethod = "edit",
+//            originalOpcode = MethodInvokeOpcode.INVOKEINTERFACE
+//        )
+//        @JvmStatic
+//        fun edit(
+//            sp: SharedPreferences
+//        ): Editor? {
+//            Log.i("LiuTest", "SharedPreferences edit ")
+//            return EditorPlus2(sp.edit())
+//        }
 
         @PrivacyMethodProxy(
             originalClass = SharedPreferences::class,
