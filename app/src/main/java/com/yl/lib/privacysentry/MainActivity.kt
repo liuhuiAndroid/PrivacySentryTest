@@ -70,24 +70,33 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Button>(R.id.btn_file).setOnClickListener {
 //            writeToFileUsingFile(this@MainActivity, "fileName", "1234")
-            val filename = "myfile.txt"
-            val fileContents = "Hello, World!"
-            val fos: FileOutputStream = (this@MainActivity as Context).openFileOutput(filename, MODE_PRIVATE)
-            Log.i("LiuTest", "MainActivity openFileOutput")
-            fos.write(fileContents.toByteArray())
-            fos.close()
+//            val filename = "myfile.txt"
+//            val fileContents = "Hello, World!"
+//            val fos: FileOutputStream = (this@MainActivity as Context).openFileOutput(filename, MODE_PRIVATE)
+//            Log.i("LiuTest", "MainActivity openFileOutput")
+//            fos.write(fileContents.toByteArray())
+//            fos.close()
+//
+//            val fis: FileInputStream = (this@MainActivity as Context).openFileInput(filename)
+//            Log.i("LiuTest", "MainActivity openFileInput")
+//            val isr = InputStreamReader(fis)
+//            val bufferedReader = BufferedReader(isr)
+//            val stringBuilder = StringBuilder()
+//            var line: String?
+//            while ((bufferedReader.readLine().also { line = it }) != null) {
+//                stringBuilder.append(line)
+//            }
+//            val fileContents2 = stringBuilder.toString()
+//            fis.close()
 
-            val fis: FileInputStream = (this@MainActivity as Context).openFileInput(filename)
-            Log.i("LiuTest", "MainActivity openFileInput")
-            val isr = InputStreamReader(fis)
-            val bufferedReader = BufferedReader(isr)
-            val stringBuilder = StringBuilder()
-            var line: String?
-            while ((bufferedReader.readLine().also { line = it }) != null) {
-                stringBuilder.append(line)
+            val dbHelper = MyDatabaseHelper(this)
+            val newRowId = dbHelper.insertUser("John Doe", 25)
+
+            if (newRowId != -1L) {
+                println("User inserted with row id: $newRowId")
+            } else {
+                println("Error inserting user")
             }
-            val fileContents2 = stringBuilder.toString()
-            fis.close()
         }
 
         findViewById<Button>(R.id.btn_sharedPerferences).setOnClickListener {

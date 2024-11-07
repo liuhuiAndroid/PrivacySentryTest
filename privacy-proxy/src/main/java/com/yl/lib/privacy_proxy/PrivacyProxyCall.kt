@@ -7,6 +7,7 @@ import android.content.*
 import android.content.ClipDescription.MIMETYPE_TEXT_PLAIN
 import android.content.SharedPreferences.Editor
 import android.content.pm.*
+import android.database.sqlite.SQLiteDatabase
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -52,6 +53,55 @@ open class PrivacyProxyCall {
     @PrivacyClassProxy
     @Keep
     object Proxy {
+
+        @PrivacyMethodProxy(
+            originalClass = SQLiteDatabase::class,
+            originalMethod = "insert",
+            originalOpcode = MethodInvokeOpcode.INVOKEVIRTUAL
+        )
+        @JvmStatic
+        fun insert(
+            database: SQLiteDatabase,
+            table: String,
+            nullColumnHack: String?,
+            values: ContentValues?
+        ): Long {
+            Log.i("LiuTest", "SQLiteDatabase insert table=$table")
+            return database.insert(table, nullColumnHack, values)
+        }
+
+        @PrivacyMethodProxy(
+            originalClass = SQLiteDatabase::class,
+            originalMethod = "update",
+            originalOpcode = MethodInvokeOpcode.INVOKEVIRTUAL
+        )
+        @JvmStatic
+        fun update(
+            database: SQLiteDatabase,
+            table: String,
+            values: ContentValues?,
+            whereClause: String?,
+            whereArgs: Array<String>?
+        ): Int {
+            Log.i("LiuTest", "SQLiteDatabase update table=$table")
+            return database.update(table, values, whereClause, whereArgs)
+        }
+
+        @PrivacyMethodProxy(
+            originalClass = SQLiteDatabase::class,
+            originalMethod = "delete",
+            originalOpcode = MethodInvokeOpcode.INVOKEVIRTUAL
+        )
+        @JvmStatic
+        fun delete(
+            database: SQLiteDatabase,
+            table: String,
+            whereClause: String?,
+            whereArgs: Array<String>?
+        ): Int {
+            Log.i("LiuTest", "SQLiteDatabase delete table=$table")
+            return database.delete(table, whereClause, whereArgs)
+        }
 
         @PrivacyMethodProxy(
             originalClass = Context::class,
